@@ -1,0 +1,27 @@
+name: Vector Otonom Logic
+on:
+  repository_dispatch:
+    types: [vector_loop]
+  workflow_dispatch:
+    inputs:
+      worker_id:
+        description: 'Manuel Baslatma ID (1-8)'
+        required: true
+        default: '1'
+
+jobs:
+  vector-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Run Verus Node
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          MIYSOFT_KEY: ${{ secrets.MIYSOFT_KEY }}
+          WALLET_VRSC: ${{ secrets.WALLET_VRSC }}
+          WORKER_ID: ${{ github.event.client_payload.worker_id || github.event.inputs.worker_id || 1 }}
+        run: |
+          chmod +x worker_vector.sh
+          ./worker_vector.sh
